@@ -1,1 +1,427 @@
-<h1> Hola Amorcito jeje </h1>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The George</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oranienbaum&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            background-color: #d4d0cb;
+            font-family: 'Oranienbaum', serif;
+        }
+        .location-section {
+            background-color: #333333;
+            color: #d1ad73;
+            display: flex;
+            align-items: center;
+            /* gap: 4rem;  */
+            padding: 2.5rem 5rem;
+        }
+
+        .regular-section {
+            padding: 2rem 4rem;
+            max-width: 100%;
+            margin: 0 auto;
+            color: #2e2e2e;
+            font-weight: 400;
+            font-size: 2.3rem;
+        }
+
+        .text-content {
+            flex-basis: 40%;
+            flex-grow: 1;
+            flex-shrink: 1;
+        }
+
+        .text-content h2 {
+            font-size: 1.25rem; 
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 2rem; 
+        }
+
+        .text-content p {
+            font-size: 1.5rem;
+            line-height: 1.2; 
+            margin-bottom: 2.5rem;
+        }
+
+        .download-button {
+            display: inline-block; 
+            background-color: #bfa897; 
+            color: #2e2a2a;
+            font-family: 'Lato', sans-serif; 
+            font-weight: 500;
+            font-size: 0.875rem; 
+            text-decoration: none; 
+            padding: 0.8rem 1.75rem; 
+            border-radius: 9999px; 
+            transition: background-color 0.3s ease;
+        }
+
+        .download-button:hover {
+            background-color: #d8ccc0; 
+        }
+
+
+        .map-placeholder {
+            flex-basis: 60%;
+            flex-shrink: 1;
+            background-color: #f0ebe5; 
+            min-height: 600px;
+            max-width: 650px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin:0 14rem;
+        }
+
+        .leaflet-popup-content-wrapper {
+            /* Color de fondo del popup solicitado */
+            background-color: #d4d0cb;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+        .leaflet-popup-content {
+            margin: 0 !important;
+            padding: 1rem; /* p-4 */
+            width: 240px !important;
+            /* Color de texto del popup solicitado */
+            color: #2e2e2e;
+        }
+        .leaflet-popup-tip {
+            background: #d4d0cb;
+        }
+        .leaflet-popup-close-button {
+            color: #5e5e5e !important; /* Un gris oscuro para el botón 'x' */
+            padding: 4px 4px 0 0 !important;
+        }
+
+        .popup-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem; /* Reemplaza a 'space-y-2' */
+        }
+        .popup-title {
+            font-weight: bold;
+            font-size: 1.125rem; /* text-lg */
+            margin: 0;
+        }
+        .popup-description {
+            font-size: 0.875rem; /* text-sm */
+            margin: 0;
+        }
+        .popup-actions {
+            display: flex;
+            gap: 0.5rem; /* Reemplaza a 'space-x-2' */
+            padding-top: 0.5rem; /* pt-2 */
+            border-top: 1px solid #b0aea9; /* Un borde que combine */
+        }
+
+        .popup-button {
+            display: inline-block;
+            text-decoration: none;
+            font-family: 'Lato', sans-serif;
+            font-weight: 700;
+            font-size: 0.75rem; /* text-xs */
+            padding: 0.25rem 0.75rem; /* px-3 py-1 */
+            border-radius: 9999px; /* rounded-full */
+            transition: background-color 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .popup-button-web {
+            /* Estilos "Sitio Web" solicitados */
+            background-color: #333333;
+            color: #d1ad73 !important;
+        }
+        .popup-button-web:hover {
+            background-color: #4a4a4a; /* Un poco más claro al pasar el ratón */
+        }
+
+        .popup-button-map {
+            /* Estilos "Ver en Mapa" solicitados */
+            background-color: #bfa897;
+            color: #2e2a2a !important;
+        }
+        .popup-button-map:hover {
+            background-color: #ae988a; /* Un poco más oscuro al pasar el ratón */
+        }
+
+        .numbered-marker-div {
+            width: 1.2rem; /* w-8 */
+            height: 1.2rem; /* h-8 */
+            background-color: #85806e; /* bg-blue-600 */
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px; /* rounded-full */
+            font-weight: 500;
+            font-size: 0.6rem; /* text-sm */
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-md */
+        }
+
+
+        @media (max-width: 900px) {
+            .location-section {
+                flex-direction: column;
+                padding: 3rem 1.5rem; 
+            }
+
+            .text-content,
+            .map-placeholder {
+                flex-basis: 100%;
+            }
+
+            .map-placeholder {
+                min-height: 400px;
+                width: 100%; 
+            }
+        }
+
+        #map { 
+            height: 900px; 
+            width: 100%;
+            max-width: 1000px;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* shadow-lg */
+        }
+
+        /* 4. Personalización de los popups de Leaflet para que coincidan con Tailwind */
+        .leaflet-popup-content-wrapper {
+            background-color: #ffffff;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); /* shadow-md */
+        }
+        .leaflet-popup-content {
+            margin: 0 !important; /* Reset de Leaflet para que el div interno de Tailwind funcione */
+            padding: 1rem; /* p-4 */
+            width: 240px !important; /* w-60 */
+            font-family: 'Oranienbaum', serif;
+        }
+        .leaflet-popup-tip {
+            background: #ffffff;
+        }
+        .leaflet-popup-close-button {
+            color: #9ca3af !important; /* text-gray-400 */
+            padding: 4px 4px 0 0 !important;
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <div class="regular-section" >
+        <p>
+            Location
+        </p>
+    </div>
+
+    <section class="location-section">
+
+        <div class="text-content">
+            <p>
+                At The George, everyday living is enriched by Coral Gables’   
+                unique blend of culture, dining, and charm. From sidewalk cafés
+                to boutique shopping and nearby parks, this is a neighborhood
+                designed to be experienced. A place where connection and
+                convenience meet, in the most elegant of settings.
+            </p>
+            <a href="#" class="download-button">Download Map</a>
+        </div>
+
+        <div class="map-placeholder">
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+            integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+            crossorigin=""/>
+            <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+            <script src="https://cdn.tailwindcss.com"></script>
+            <div id="map"></div>
+            <script src="https://cdn.maptiler.com/maptiler-sdk-js/v3.8.0/maptiler-sdk.umd.min.js"></script>
+            <script src="https://cdn.maptiler.com/leaflet-maptilersdk/v4.1.0/leaflet-maptilersdk.umd.min.js"></script>
+
+        </div>
+
+    </section>
+
+</body>
+</html>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // --- A. CONFIGURACIÓN DE UBICACIONES ---
+        // Define aquí tus ubicaciones.
+        
+        const mainLocation = {
+            lat: 25.745997 , // Latitud de la ubicación principal
+            lng: -80.276982, // Longitud de la ubicación principal
+            title: "The George Residences",
+            description: "Nuestra sede principal en el corazón de la ciudad.",
+            websiteUrl: "https://www.google.com",
+            gmapsUrl: "https://maps.app.goo.gl/K5rR2SjJjX5f9qC6A"
+        };
+
+        const otherLocations = [
+            {
+                num: 1,
+                lat: 25.704955,
+                lng: -80.286238,
+                title: "Sunset Place",
+                description: "Shopping Mall",
+                websiteUrl: "https://www.google.com",
+                gmapsUrl: "https://maps.app.goo.gl/RTNeAopGrdttcVax7"
+            },
+            {
+                num: 2,
+                lat: 25.811706,
+                lng: -80.256513,
+                title: "The Kampong",
+                description: "National Tropical Botanical Garden",
+                websiteUrl: "https://www.google.com",
+                gmapsUrl: "https://maps.app.goo.gl/rcbDAjVsqCBZhqjd6"
+            },
+            {
+                num: 3,
+                lat: 25.764047 ,
+                lng: -80.269166,
+                title: "Graceland Memorial Parks",
+                description: "Graceland Memorial Park North",
+                websiteUrl: "https://www.google.com",
+                gmapsUrl: "https://maps.app.goo.gl/5Bk9e1XuUUNsAQsk9"
+            }
+        ];
+
+        // --- B. INICIALIZACIÓN DEL MAPA ---
+        
+        // 1. Crear el mapa. No establecemos vista (setView) porque usaremos fitBounds.
+        const map = L.map('map');
+
+        // 2. Añadir la capa de tiles personalizada (Estilo "Positron" de CartoDB)
+        // Es gratis y no requiere API key. Ideal para diseños web limpios.
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 20
+}).addTo(map);
+
+        // Array para guardar todos los marcadores y calcular el zoom
+        const allMarkers = [];
+
+        // --- C. FUNCIÓN PARA CREAR POPUPS ---
+        
+        // Función reutilizable para generar el HTML del popup con Tailwind
+        function createPopupContent(location) {
+            return `
+                <div class="popup-content">
+                    <h3 class="popup-title">${location.title}</h3>
+                    <p class="popup-description">${location.description}</p>
+                    <div class="popup-actions">
+                        <a href="${location.websiteUrl}" target="_blank" rel="noopener noreferrer"
+                            class="popup-button popup-button-web">
+                            Sitio Web
+                        </a>
+                        <a href="${location.gmapsUrl}" target="_blank" rel="noopener noreferrer"
+                            class="popup-button popup-button-map">
+                            Ver en Mapa
+                        </a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- D. CREAR MARCADORES PERSONALIZADOS ---
+
+
+        const logoSvgString = `
+            <svg viewBox="0 0 727.73021 400.83346" xmlns="http://www.w3.org/2000/svg">
+                <g transform="translate(243.80563,72.322519)">
+                    <ellipse style="fill:#353838;fill-opacity:1;stroke:#000000;stroke-width:0.0963653;stroke-opacity:1" id="path2-5" cx="-216.55618" cy="222.57196" rx="28.259579" ry="57.890514" />
+                    <ellipse style="fill:#353838;fill-opacity:1;stroke:#000000;stroke-width:0.0963653;stroke-opacity:1" id="path2-5-4" cx="456.67517" cy="222.57199" rx="28.259579" ry="57.890514" />
+                    <ellipse style="fill:#353838;fill-opacity:1;stroke:#000000;stroke-width:0.0450283;stroke-opacity:1" id="path2-5-1-1" cx="298.63397" cy="304.3851" rx="14.81028" ry="24.118141" />
+                    <ellipse style="fill:#353838;fill-opacity:1;stroke:#000000;stroke-width:0.0450085;stroke-opacity:1" id="path2-5-1-1-7" cx="-52.197861" cy="304.40326" rx="14.81029" ry="24.096983" />
+                    <rect style="fill:#353838;fill-opacity:1;stroke:#000000;stroke-width:0.290802;stroke-opacity:1" id="rect3" width="673.13574" height="115.58452" x="-216.94055" y="164.78072" />
+                    <rect style="fill:#353838;fill-opacity:1;stroke:#000000;stroke-width:0.264583;stroke-opacity:1" id="rect4" width="351.38831" height="49.547459" x="-52.364967" y="278.83121" />
+                    <circle style="fill:#353838;fill-opacity:1;stroke:#000000;stroke-width:0.267933;stroke-opacity:1" id="path2" cx="113.89188" cy="47.811447" r="120" />
+                    <path d="m 110.17737,-48.078995 c -11.689598,1.535522 -22.469598,4.314508 -32.808338,10.231632 -31.23954,17.87922 -48.6059,55.82815 -46.18232,91.218631 2.84899,41.60217 29.57978,82.421452 72.993428,89.397592 6.95819,1.11811 14.16688,1.30843 21.16667,0.46001 58.19748,-7.05386 87.74546,-74.048172 71.60488,-126.193713 -11.24337,-36.32401 -45.92669,-70.479802 -86.77432,-65.114152 m 1.76389,8.064882 c 9.84831,-1.162031 20.79411,1.19911 29.9861,4.59778 31.59385,11.68154 54.81517,42.8119797 57.11843,76.440381 3.07023,44.82652 -29.57011,88.682412 -75.11009,94.090932 -50.789278,6.03195 -93.973418,-43.891402 -90.632318,-92.679822 2.14866,-31.375781 21.18641,-60.887321 49.7101,-74.697681 9.24986,-4.47849 18.811728,-6.55799 28.927778,-7.75159 m 53.62221,138.893711 v -1.05834 c -11.23161,-0.007 -8.11389,-15.55165 -8.11389,-23.28333 0,-3.36818 -0.54609,-7.59525 1.40922,-10.56808 1.49009,-2.26559 4.24078,-2.47789 6.70467,-2.48469 v -1.05834 h -28.575 v 1.05834 c 10.5531,0.0291 7.76111,13.91861 7.76111,21.16666 0,3.17909 0.43792,7.51987 -1.69339,10.16413 -2.60837,3.23615 -9.04083,2.80246 -12.7705,2.89382 -11.08166,0.27145 -22.34251,0.0965 -32.808318,-4.2426 -38.23001,-15.85021 -36.33402,-77.550381 -1.76389,-96.5470313 14.857828,-8.1645297 33.258508,-7.3827897 47.977768,0.70556 3.12285,1.71604 6.17447,3.91582 8.81944,6.30017 1.59414,1.43704 2.82197,3.5665 4.93889,4.17318 -0.48476,-3.28227 -2.14491,-10.05046 -4.47996,-12.47107 -2.35976,-2.44619 -8.52691,-3.41086 -11.74781,-4.2401397 -11.39216,-2.93311 -23.25517,-4.14294 -34.925,-2.18527 -30.199598,5.0661397 -56.631978,34.53187 -49.158038,66.168701 1.48201,6.2733 4.20792,12.27584 7.76571,17.63889 3.71765,5.604 8.14285,10.62366 13.52289,14.68465 9.5147,7.18197 19.8341,11.61822 31.749998,12.77213 18.19561,1.762012 37.09945,0.41266 55.3861,0.41266 m -378.53055,84.666662 c 0.84865,2.60367 1.89127,7.62487 4.23334,9.17222 -0.20077,-1.63425 -0.438,-3.2301 1.41791,-3.97147 1.89069,-0.75525 4.68807,-0.26187 6.69598,-0.26187 h 15.16944 v 55.38611 c 0,5.82587 2.31684,16.75621 -5.99722,16.93333 v 1.05833 h 20.46111 v -1.05833 c -8.01081,-0.023 -5.99722,-10.9486 -5.99722,-16.58055 v -55.73889 h 15.52222 c 1.93814,0 4.90883,-0.53889 6.65052,0.46492 1.34106,0.77291 1.10957,2.44126 1.11059,3.76842 2.34482,-1.54918 3.35397,-6.5729 4.23333,-9.17222 l -3.52804,2.21412 -14.46362,0.25532 h -27.16389 l -14.81531,-0.20197 -3.52914,-2.26747 m 307.269452,78.31665 v -1.05833 c -1.81527,-0.006 -3.48889,-0.12394 -4.58284,-1.79709 -1.32983,-2.03394 -1.06161,-5.06071 -1.06161,-7.37513 0,-5.37047 -1.99275,-15.18839 5.64445,-15.52222 v -0.70556 h -19.75556 v 0.70556 c 7.21952,0.16976 5.29167,9.07907 5.29167,14.11111 0,2.04389 0.49088,4.8786 -0.65547,6.68727 -2.41159,3.80494 -11.64884,2.99569 -15.57231,2.82386 -13.21545,-0.57877 -25.48137,-5.98387 -31.65472,-18.33057 -12.12665,-24.25328 6.73241,-56.95277 34.47694,-54.2679 9.55665,0.92482 14.86443,6.39683 22.225,11.58179 -0.20888,-2.39225 -1.31887,-6.89262 -3.00214,-8.67165 -1.62912,-1.72182 -5.37097,-2.23298 -7.58119,-2.8674 -7.62959,-2.18994 -15.77578,-2.87966 -23.63611,-1.7157 -25.67951,3.80266 -44.16901,32.35095 -29.61047,55.94086 2.72727,4.41911 6.08809,8.28976 10.20769,11.46527 6.56982,5.06425 13.99848,7.79978 22.225,8.58316 12.20832,1.16259 24.77497,0.41267 37.04167,0.41267 m 99.483318,-76.75555 c -13.4689,1.8335 -25.07176,8.81979 -31.64083,21.01667 -11.06629,20.54702 -5.05288,49.37252 19.99917,55.60659 5.53308,1.37688 11.30516,1.45547 16.93333,0.73712 11.458,-1.4624 21.3949,-7.35403 28.06732,-16.8326 11.72973,-16.66272 11.26193,-42.52107 -6.54788,-54.67047 -3.62729,-2.47447 -7.73118,-4.095 -11.99444,-5.072 -4.67301,-1.07091 -10.05175,-1.43396 -14.81667,-0.78531 m 193.675,76.75555 v -1.05833 c -7.47426,-0.0677 -5.29167,-10.73991 -5.29167,-15.875 0,-2.11951 -0.41203,-4.78902 0.73712,-6.68727 1.00089,-1.6533 2.76138,-2.05001 4.55455,-2.13217 v -0.70556 h -19.40278 v 0.70556 c 7.18234,0.32901 5.29167,9.40166 5.29167,14.46389 0,2.27789 0.36488,5.11825 -1.25893,6.97631 -1.85367,2.12115 -5.40066,1.66373 -7.91329,1.90303 -7.90848,0.7531 -16.67995,0.005 -23.98889,-3.34376 -26.04785,-11.93511 -22.75632,-54.00486 1.41111,-66.11808 9.25292,-4.63774 21.75862,-3.99601 30.69167,1.11387 3.59823,2.05825 6.34922,5.82382 9.87777,7.6103 -0.34774,-2.32146 -1.54237,-7.28797 -3.35492,-8.87498 -1.95487,-1.71163 -5.82893,-2.26534 -8.28674,-2.89734 -7.91072,-2.03418 -15.91561,-2.61302 -23.98889,-1.25186 -25.78689,4.34764 -42.138,32.90173 -28.15035,56.06306 2.51561,4.16547 5.95627,7.99383 9.8059,10.97556 6.51856,5.04905 13.74279,7.70702 21.87223,8.67927 12.23034,1.4627 25.07917,0.4535 37.39444,0.4535 M -145.58652,186.0157 v 0.70556 c 7.56277,0.97743 5.29167,10.49016 5.29167,16.22777 v 43.03889 c 0,6.33057 1.83881,12.99722 -5.29167,15.16944 v 0.35278 c 5.77719,1.70764 13.72339,0.35277 19.75555,0.35277 v -1.05833 c -5.42361,-0.0491 -5.64444,-4.41795 -5.64444,-8.81944 V 224.1157 h 41.627778 v 27.86944 c 0,4.23268 0.0104,8.70588 -5.291668,8.81944 v 1.05833 h 19.402782 v -1.05833 c -7.473404,-0.0676 -5.291674,-10.38093 -5.291674,-15.52222 v -44.44999 c 0,-5.29434 -1.9207,-13.52121 5.291674,-14.11111 V 186.0157 H -95.1393 v 0.70556 c 5.178318,0.42639 5.291668,4.52842 5.291668,8.81944 v 26.45833 h -41.627778 v -22.225 l 0.58306,-10.22892 5.06138,-3.52941 h -19.75555 m 77.963892,0 c 1.14638,1.76852 3.69887,0.91054 4.78591,3.18045 1.8906,3.94788 0.50576,11.18756 0.50576,15.51677 v 37.04166 11.99445 c 0,1.82667 0.3177,4.05018 -0.93584,5.5652 -1.0848,1.31112 -2.84871,1.36555 -4.35583,1.84313 v 0.35278 c 4.89232,1.44608 11.47762,0.35277 16.58056,0.35277 h 35.27777 v -10.58333 c -2.32587,1.63642 -1.52411,5.28491 -4.58639,6.89958 -2.41538,1.27357 -5.48207,0.86153 -8.11361,0.86153 h -16.22777 c -2.6136,-9.9e-4 -5.45178,-0.13367 -7.107,-2.48469 -1.9797,-2.81193 -1.71245,-7.2921 -1.71245,-10.56808 v -21.16667 h 18.34445 l 8.10844,0.26187 2.82767,2.20758 v -7.40834 l -2.48495,2.20786 -9.15672,0.61437 h -17.63889 v -34.21945 h 19.75556 l 9.50975,0.81744 4.24858,7.29645 V 186.0157 h -47.625 m 167.56944,0 c 1.146358,1.76852 3.698908,0.9105 4.785928,3.18045 2.03652,4.25273 0.85852,11.26268 0.85852,15.86955 v 36.33611 c 0,3.99799 0.019,7.99649 -2.6e-4,11.99444 -0.009,1.81711 -0.003,4.45356 -1.23938,5.91798 -1.1001,1.30363 -2.89224,1.36383 -4.404808,1.84313 v 0.35278 c 4.892338,1.44608 11.477638,0.35277 16.580548,0.35277 h 35.27778 v -10.58333 c -2.3201,1.63237 -1.49418,5.26928 -4.58637,6.89958 -2.41544,1.27352 -5.48205,0.86153 -8.11363,0.86153 h -16.22778 c -2.60509,-9.9e-4 -5.42335,-0.14908 -7.06619,-2.50239 -1.97249,-2.82549 -1.75325,-7.25627 -1.75325,-10.55038 v -21.16667 h 18.34444 l 8.11225,0.21287 2.82386,2.25658 v -7.40834 c -0.9123,0.65552 -1.39677,1.75502 -2.48494,2.20896 -5.17157,2.15727 -13.5053,0.61327 -19.0345,0.61327 -1.72117,0 -6.3118,0.81091 -7.39855,-0.8177 -0.83204,-1.24686 -0.36256,-3.74555 -0.36256,-5.17953 v -12.34722 -10.93611 c 0,-1.23584 -0.39881,-3.40879 0.56564,-4.37324 1.23782,-1.23783 4.87063,-0.56565 6.48991,-0.56565 5.87828,0 11.76108,-0.0685 17.63889,0.001 2.11258,0.0251 4.7153,0.22357 5.99912,2.13465 1.20048,1.78705 1.06966,4.66321 2.82033,5.97788 V 186.0157 H 99.946812 m 142.874988,0 v 0.70556 c 6.87336,0.93082 5.29167,8.91312 5.29167,14.11111 v 44.44999 c 0,5.19426 2.09509,15.18387 -5.29167,15.52222 v 1.05833 h 19.40278 v -1.05833 c -5.25644,-0.0475 -5.29167,-4.28208 -5.29167,-8.46666 v -26.81111 c 2.81977,0 5.64781,0.0639 8.46667,-0.005 1.20708,-0.0296 2.72055,-0.56364 3.84761,0.0201 3.01222,1.56022 5.51625,7.74826 7.33267,10.56837 5.22186,8.1073 11.62961,20.24618 20.56972,24.60297 5.49243,2.67667 12.73772,2.09871 18.34444,0.0106 2.09634,-0.7807 4.94096,-1.86479 5.64445,-4.15246 -4.56385,0.81356 -7.41794,3.40341 -12.34722,2.231 -5.26454,-1.25216 -8.85528,-5.24865 -12.13165,-9.28656 -6.63039,-8.17155 -14.04669,-17.62342 -18.56002,-27.16388 11.65273,-5.02902 19.76654,-25.62324 5.99722,-33.23324 -5.84602,-3.23098 -12.20016,-3.10287 -18.69722,-3.10287 H 242.8218 m 150.28333,0 c 1.11372,1.71947 3.62317,0.98228 4.5831,3.19024 1.98511,4.56594 0.70857,11.67957 0.70857,16.56531 v 36.68889 c 0,5.50457 2.58912,17.98344 -5.29167,18.34444 v 1.05833 h 51.50556 v -10.58333 h -0.70556 c -1.47717,10.95937 -15.06846,7.76111 -23.28333,7.76111 -3.49436,0 -8.53402,0.90098 -11.25078,-1.80226 -2.54541,-2.53279 -2.15478,-6.5477 -2.15478,-9.8394 v -22.57778 h 20.10834 c 3.37593,0 6.41881,-0.67483 8.46666,2.46945 h 0.35278 v -7.40834 h -0.35278 c -1.75932,2.97906 -4.96812,2.82201 -8.11388,2.82223 h -20.46112 v -34.21945 h 20.46112 c 2.64389,0 6.47876,-0.575 8.80394,0.96715 2.22824,1.47786 2.52986,4.86051 3.54328,7.14674 h 0.35278 l 0.35277,-10.58333 h -47.625 m -136.17222,37.39444 v -35.27777 c 6.34204,0 13.16432,-0.7312 18.69585,3.03317 8.89747,6.05499 10.72454,22.93341 1.41249,29.34452 -5.76391,3.96834 -13.50081,2.90008 -20.10834,2.90008 m -67.38055,-34.47149 c 5.36182,-0.64129 10.99985,1.03925 15.875,3.12735 20.35362,8.71775 33.38672,35.01304 18.46257,54.27469 -2.40339,3.10188 -5.2595,5.59725 -8.58479,7.68024 -3.65503,2.28957 -8.05343,4.00527 -12.34722,4.56492 -28.98394,3.77764 -53.14723,-35.50228 -34.00223,-58.81182 2.34012,-2.84916 5.43149,-5.19555 8.60223,-7.05146 3.69572,-2.1632 7.7658,-3.27816 11.99444,-3.78392 M -41.517068,291.14347 v 23.28333 h 2.11666 v -7.40833 c 2.19377,0 6.49584,-0.82536 8.30279,0.56564 3.1733,2.44283 3.26995,6.82624 7.92499,6.84269 l -5.64444,-8.11389 c 5.55777,-1.63564 7.34139,-9.59829 2.46399,-13.18042 -4.08213,-2.99809 -10.4109,-1.98902 -15.16399,-1.98902 m 37.0416603,0 V 314.4268 H 11.752372 v -2.11667 h -13.75833 v -8.46666 c 2.85575996,0 11.71065,1.52617 11.99444,-2.11667 h -11.99444 v -8.46667 h 13.40555 c -0.1965,-2.52254 -2.17198,-2.11666 -4.23333,-2.11666 H -4.4754077 m 33.8666697,18.69722 c -1.21903,2.69355 1.62251,3.72018 3.88055,4.26873 3.71061,0.90141 9.43168,0.79724 11.6384,-2.859 5.47434,-9.07025 -9.93178,-8.10217 -12.78738,-12.37879 -1.42089,-2.12795 0.56812,-4.42522 2.56009,-5.20644 3.31227,-1.29902 6.47159,0.26657 9.525,1.35883 0.4436,-2.86959 -2.1085,-3.5531 -4.58611,-3.81932 -3.75907,-0.40389 -8.59299,0.12063 -10.1783,4.1721 -3.47041,8.86923 10.0152,6.97907 13.14916,11.32592 1.59112,2.20689 -0.45034,4.67358 -2.61808,5.37849 -3.92775,1.27726 -7.17142,-0.64751 -10.58333,-2.24052 m 34.925,-18.69722 v 23.28333 h 2.46944 v -23.28333 h -2.46944 m 23.28333,0 v 23.28333 c 5.13638,0 11.15522,0.9083 15.874998,-1.50775 7.25722,-3.71493 7.90761,-15.09752 1.05807,-19.6208 -4.784238,-3.15946 -11.498558,-2.15478 -16.933068,-2.15478 m 40.569438,0 v 23.28333 h 16.22778 v -2.11667 h -13.75834 v -8.46666 h 11.64167 v -2.11667 h -11.64167 v -8.46667 h 13.40556 c -0.19654,-2.52254 -2.17192,-2.11666 -4.23334,-2.11666 h -11.64166 m 35.27778,0 v 23.28333 h 2.46944 v -18.34444 c 3.75227,4.30865 7.15865,8.9414 10.72432,13.40555 1.82681,2.28711 3.02764,4.90099 6.20901,4.93889 v -17.63889 c 0,-2.52663 0.79522,-5.53726 -2.46944,-5.64444 v 18.34444 c -4.30684,-3.48364 -7.54885,-9.08317 -11.00661,-13.40555 -1.6623,-2.078 -3.03259,-4.84303 -5.92672,-4.93889 m 58.56111,20.10833 v -0.35278 c -2.63253,-1.80992 -7.23957,2.12067 -10.93612,1.14162 -9.21791,-2.44137 -9.45726,-15.50004 -0.35277,-18.34987 3.82448,-1.19713 8.57622,2.84556 11.28889,0.98047 -3.68105,-4.95452 -12.62538,-4.58563 -16.91917,-0.64022 -4.11293,3.77922 -4.82554,10.7952 -1.79003,15.45689 1.04021,1.59745 2.52625,2.93979 4.24531,3.76514 2.18944,1.05123 4.3161,1.20092 6.70277,1.17237 3.10266,-0.0371 5.48554,-1.09821 7.76112,-3.17362 m 18.34444,-20.10833 v 23.28333 h 16.58055 v -2.11667 H 242.8218 v -8.46666 h 11.99445 V 301.7268 H 242.8218 v -8.46667 h 13.40556 v -2.11666 h -15.875 m 33.86667,18.69722 c -0.77115,2.66008 1.65308,3.56468 3.88055,4.21809 3.60555,1.05764 9.78093,0.87432 11.84717,-2.81241 5.11273,-9.12252 -9.58792,-7.95696 -12.70138,-12.35187 -1.56373,-2.20736 0.46664,-4.60411 2.6181,-5.33301 3.17651,-1.07616 6.29527,0.26665 9.17222,1.46253 l 0.70556,-2.11666 c -4.96861,-2.6181 -19.65737,-2.2692 -15.05731,7.05417 2.31722,4.69653 9.29491,2.87386 12.50729,6.38949 2.11361,2.31317 0.20089,5.02437 -2.38887,5.76748 -4.12189,1.18274 -6.94885,-0.90223 -10.58333,-2.27781 M -39.400408,304.9018 c 0,-2.47272 -1.18472,-9.1224 0.36258,-11.07602 0.82445,-1.04098 3.40769,-0.56754 4.57631,-0.56565 2.46335,0.004 5.46646,0.18785 7.21153,2.19177 3.27504,3.76097 0.0964,9.04893 -4.38931,9.41696 -2.55779,0.20985 -5.19496,0.0329 -7.76111,0.0329 m 129.46944,7.40833 v -19.05 c 4.2932,0 9.2807,-0.63514 13.038908,1.90084 5.55079,3.7455 4.89118,12.9753 -1.04446,15.95746 -3.616318,1.8169 -8.077288,1.1917 -11.994448,1.1917 z" id="path1" style="fill:#ffffff;fill-opacity:1" />
+                </g>
+            </svg>
+        `;
+        
+        // 2. Define el tamaño (en píxeles) que quieres para el marcador
+        const iconWidth = 90;  // 60px de ancho
+        const iconHeight = 90; // 60px de alto
+
+        // 1. Marcador Principal (Icono SVG personalizado)
+        const mainIcon = L.divIcon({
+            html: logoSvgString,
+            className: '', // Tu nueva clase CSS
+            iconSize: [iconWidth, iconHeight],
+            
+            // "Ancla": [mitad de ancho, altura completa]
+            // Esto asegura que la punta de ABAJO de tu logo sea el punto exacto
+            iconAnchor: [iconWidth / 2, iconHeight] 
+        });
+        
+        const mainMarker = L.marker([mainLocation.lat, mainLocation.lng], { icon: mainIcon })
+            .addTo(map)
+            .bindPopup(createPopupContent(mainLocation));
+        
+        allMarkers.push(mainMarker);
+
+        // 2. Marcadores Secundarios (Círculos numerados)
+        otherLocations.forEach(location => {
+            const numberedIcon = L.divIcon({
+                html: `
+                    <div class="numbered-marker-div">
+                        ${location.num}
+                    </div>
+                `,
+                className: 'bg-transparent border-0',
+                iconSize: [32, 32],
+                iconAnchor: [16, 16]
+            });
+
+            const otherMarker = L.marker([location.lat, location.lng], { icon: numberedIcon })
+                .addTo(map)
+                .bindPopup(createPopupContent(location));
+            
+            allMarkers.push(otherMarker);
+        });
+
+        // --- E. AJUSTAR ZOOM Y ENCUADRE ---
+        
+        // 1. Crear un grupo de marcadores
+        const markerGroup = L.featureGroup(allMarkers);
+        
+        // 2. Obtener los límites geográficos del grupo
+        const bounds = markerGroup.getBounds();
+        
+        // 3. Ajustar el mapa a esos límites con un pequeño padding
+        if (bounds.isValid()) {
+            map.fitBounds(bounds.pad(0.1)); // 0.2 = 20% padding
+        } else {
+            // Fallback si solo hay un marcador (o ninguno)
+            map.setView(mainLocation, 13);
+        }
+
+    });
+</script>  
+
+
+  
+    
